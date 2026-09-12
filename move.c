@@ -75,9 +75,9 @@ int main(int argc, char *argv[]) {
     //
     //
     int running = 0;
-    SDL_EvenType pop_event;
-
-    while (SDL_PollEvent(&pop_event)) {
+    SDL_Event pop_event;
+    // this event is for running main window
+    while (SDL_PollEvent(&event)) {
 
       if (event.type == SDL_EVENT_QUIT) {
         // stop this shit;
@@ -100,14 +100,14 @@ int main(int argc, char *argv[]) {
           //
           //
           //
-          while(SDL_PollEvent(&pop_event){
+          while (SDL_PollEvent(&pop_event)) {
             if (event.type == SDL_EVENT_QUIT) {
               run = 0;
             }
           }
-          SDL_UpdateTexture(poptexture,NULL,frame,HE*sizeof(int));
+          SDL_UpdateTexture(poptexture, NULL, frame, HE * sizeof(int));
           SDL_RenderClear(poprend);
-          SDL_RenderTexture(poprend,poptexture, NULL,NULL);
+          SDL_RenderTexture(poprend, poptexture, NULL, NULL);
           SDL_RenderPresent(poprend);
         }
 
