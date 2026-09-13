@@ -24,10 +24,10 @@ void player(int x, int y);
 void ene(int x, int y);
 void bullet(int x, int y);
 //
-struct speed {
+typedef struct { // forgot how structs work damn.
   float x, y;
   float vx, vy;
-};
+} speed;
 
 /*
  *
@@ -89,7 +89,12 @@ int main(int argc, char *argv[]) {
         // stop this shit;
         value = 0;
       }
-
+      //
+      //
+      //
+      //
+      //
+      //
       if (event.type == SDL_EVENT_KEY_DOWN) {
         if (event.key.key == SDLK_ESCAPE) {
           // check if there is a popup or not
@@ -108,8 +113,26 @@ int main(int argc, char *argv[]) {
     //
     //
     //
+    //
     clear(0x2A2A2A);
     // so would this be my canvas i guess?
+    //
+    //
+
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
     //
     //
     //
@@ -160,4 +183,4 @@ void player(int x, int y) { shape(x, y); }
 //
 void ene(int x, int y) { shape(x, y); }
 
-void bullet(int x, int y) {}
+void bullet(int x, int y) { draw(x, y - 1, 0xFFFFFFF); }
