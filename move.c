@@ -83,7 +83,7 @@ int main(int argc, char *argv[]) {
         value = 0;
       }
 
-      if (keys[SDL_SCANCODE_ESCAPE] == true) {
+      if (keys[SDL_SCANCODE_ESCAPE] == true) { // THIS SHIT IS NOT WORKING WTF
         int popframebuffer[500 * 500];
         SDL_Window *popup =
             SDL_CreatePopupWindow(map, 500, 500, LE / 2, HE / 2, 0);
@@ -112,7 +112,7 @@ int main(int argc, char *argv[]) {
           SDL_RenderTexture(poprend, poptexture, NULL, NULL);
           // wtf does render present do?-
           SDL_RenderPresent(poprend); //--> so basically it updates my windows
-                                      //display screen with any drawing
+                                      // display screen with any drawing
                                       // operations perforemed since last frame.
         }
         SDL_DestroyTexture(poptexture);
@@ -135,15 +135,14 @@ int main(int argc, char *argv[]) {
       SDL_RenderTexture(rend, texture, NULL, NULL);
       SDL_RenderPresent(rend);
     }
-
-    // here we nuke the things and stuff me made why? idk?
-    SDL_DestroyTexture(texture);
-    SDL_DestroyRenderer(rend);
-    SDL_DestroyWindow(map);
-
-    SDL_Quit();
-    return 0;
   }
+  // here we nuke the things and stuff me made why? idk?
+  SDL_DestroyTexture(texture);
+  SDL_DestroyRenderer(rend);
+  SDL_DestroyWindow(map);
+
+  SDL_Quit();
+  return 0;
 }
 
 void clear(int color) {
