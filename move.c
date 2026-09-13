@@ -74,7 +74,6 @@ int main(int argc, char *argv[]) {
   while (value) {
     //
     //
-    int running = 0;
     SDL_Event pop_event;
     // this event is for running main window
     while (SDL_PollEvent(&event)) {
@@ -85,64 +84,66 @@ int main(int argc, char *argv[]) {
       }
 
       if (keys[SDL_SCANCODE_ESCAPE] == true) {
-
+        int popframebuffer[500 * 500];
         SDL_Window *popup =
             SDL_CreatePopupWindow(map, 500, 500, LE / 2, HE / 2, 0);
         SDL_Renderer *poprend = SDL_CreateRenderer(popup, NULL);
         SDL_Texture *poptexture =
             SDL_CreateTexture(poprend, SDL_PIXELFORMAT_ABGR8888,
                               SDL_TEXTUREACCESS_STREAMING, HE / 2, LE / 2);
-        int run = 1; /*
-
-          */
-
-        while (run) {
+        int value2;
+        // after this the window is running or not command comes for  the popup
+        // one
+        while (value2) {
           //
-          //
-          //
-          while (SDL_PollEvent(&pop_event)) {
-            if (event.type == SDL_EVENT_QUIT) {
-              run = 0;
-            }
+          if (event.type == SDL_EVENT_QUIT) {
+            value2 = 0;
           }
-          SDL_UpdateTexture(poptexture, NULL, frame, HE * sizeof(int));
-          SDL_RenderClear(poprend);
-          SDL_RenderTexture(poprend, poptexture, NULL, NULL);
-          SDL_RenderPresent(poprend);
-        }
 
+          clear(0x2A2A2A);
+          // here i am confused as fuck -- can i use that rectanble thing i
+          // learned or no?
+          SDL_UpdateTexture(poptexture, NULL, popframebuffer,
+                            500 * sizeof(int));
+          SDL_UpdateTexture(texture, NULL, frame, LE * sizeof(int));
+          // here we will display things ig?
+          SDL_RenderClear(poprend);
+          // doubt here on render texture parameters
+          SDL_RenderTexture(poprend, poptexture, NULL, NULL);
+          // wtf does render present do?-
+          SDL_RenderPresent(poprend); //--> so basically it updates my windows
+                                      //display screen with any drawing
+                                      // operations perforemed since last frame.
+        }
         SDL_DestroyTexture(poptexture);
         SDL_DestroyRenderer(poprend);
         SDL_DestroyWindow(popup);
-
-        SDL_Log("SDL Scancode esc was pressed");
+        SDL_Quit();
       }
+      clear(0x2A2A2A);
+      // so would this be my canvas i guess?
       //
       //
+      //
+      // player(HE / 2, LE / 2);
+      draw(LE / 2, HE / 2, 0xFFFFFFF);
+
+      SDL_UpdateTexture(texture, NULL, frame, LE * sizeof(int));
+      // here we will display things ig?
+      SDL_RenderClear(rend);
+      // doubt here on render texture parameters
+      SDL_RenderTexture(rend, texture, NULL, NULL);
+      SDL_RenderPresent(rend);
     }
-    clear(0x2A2A2A);
-    // so would this be my canvas i guess?
-    //
-    //
-    //
-    // player(HE / 2, LE / 2);
-    draw(LE / 2, HE / 2, 0xFFFFFFF);
 
-    SDL_UpdateTexture(texture, NULL, frame, LE * sizeof(int));
-    // here we will display things ig?
-    SDL_RenderClear(rend);
-    // doubt here on render texture parameters
-    SDL_RenderTexture(rend, texture, NULL, NULL);
-    SDL_RenderPresent(rend);
+    // here we nuke the things and stuff me made why? idk?
+    SDL_DestroyTexture(texture);
+    SDL_DestroyRenderer(rend);
+    SDL_DestroyWindow(map);
+
+    SDL_Quit();
+    return 0;
   }
-
-  // here we nuke the things and stuff me made why? idk?
-  SDL_DestroyTexture(texture);
-  SDL_DestroyRenderer(rend);
-  SDL_DestroyWindow(map);
-
-  SDL_Quit();
-  return 0;
 }
 
 void clear(int color) {
