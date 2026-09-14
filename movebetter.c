@@ -23,14 +23,14 @@ void shape(int x, int y);
 //
 void player(int x, int y);
 void ene(int x, int y);
-void bullet(speed *player, speed *ene);
 //
 typedef struct { // forgot how structs work damn.
   float x, y;
   float vx, vy;
-
 } speed;
-
+//
+//
+void bullet(speed *player, speed *ene);
 /*
  *
  */
@@ -47,6 +47,9 @@ typedef struct { // forgot how structs work damn.
  * */
 
 int main(int argc, char *argv[]) {
+  speed player;
+  speed ene;
+  //
   SDL_Init(SDL_INIT_VIDEO);
   SDL_Event event;
 
@@ -119,13 +122,13 @@ int main(int argc, char *argv[]) {
     clear(0x2A2A2A);
     // so would this be my canvas i guess?
     //
-
+    player.y = HE / 2.0;
+    player.x = LE / 2.0;
+    ene.x = 0;
+    ene.y = 0;
+    bullet(&player, &ene);
     //
     //
-    //
-    // player(HE / 2, LE / 2);
-    draw(LE / 2, HE / 2, 0xFFFFFFF);
-    bullet(HE / 2, LE / 2, 0, HE / 2);
 
     SDL_UpdateTexture(texture, NULL, frame, LE * sizeof(int));
     // here we will display things ig?
@@ -175,19 +178,38 @@ void ene(int x, int y) { shape(x, y); }
 // togethter? wtf?
 //  i will pass the pointer to the struct having these wthings now.
 void bullet(speed *player, speed *ene) {
-
+  SDL_Event movement;
   speed bullet;
   bullet.vx = 12;
   bullet.x = player->y; // syntactic sugar for (*player).x
   bullet.y = player->x;
 
   while (true) {
-    if (bullet.y <= 0) {
-      break;
+
+    while (
+        SDL_PollEvent(&movement)) { // can make this thing an switch as well --
+                                    // so switch loop inside of a switch loop;
+      if (movement.type == SDL_EVENT_KEY_DOWN) {
+        switch (movement.key.key) {
+        // down this way we can get both cases and also the {} makes sure that
+        // indentation is always there.
+        case SDLK_RETURN:
+        case SDLK_KP_ENTER: {
+
+          if (bullet.y <= 0) {
+            break;
+          }
+          bullet.y -= 1;
+          draw(bullet.x, bullet.y,
+               0xFFFFFFFF); // but how do i create the damned animation?
+          // right now the problem is animation
+          break;
+        }
+          //
+          //
+          //
+        }
+      }
     }
-    bullet.y -= 1;
-    draw(bullet.x, bullet.y,
-         0xFFFFFFFF); // but how do i create the damned animation?
-    // right now the problem is animation
   }
 }
