@@ -8,6 +8,7 @@
 #include <SDL3/SDL_scancode.h>
 #include <SDL3/SDL_surface.h>
 #include <SDL3/SDL_video.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -22,11 +23,13 @@ void shape(int x, int y);
 //
 void player(int x, int y);
 void ene(int x, int y);
-void bullet(int x, int y);
+void bullet(int player_x, int ene_x, int ene_down_y_position,
+            int player_top_y_position);
 //
 typedef struct { // forgot how structs work damn.
   float x, y;
   float vx, vy;
+
 } speed;
 
 /*
@@ -117,27 +120,13 @@ int main(int argc, char *argv[]) {
     clear(0x2A2A2A);
     // so would this be my canvas i guess?
     //
-    //
 
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
     //
     //
     //
     // player(HE / 2, LE / 2);
     draw(LE / 2, HE / 2, 0xFFFFFFF);
+    bullet(HE / 2, LE / 2, 0, HE / 2);
 
     SDL_UpdateTexture(texture, NULL, frame, LE * sizeof(int));
     // here we will display things ig?
@@ -183,4 +172,16 @@ void player(int x, int y) { shape(x, y); }
 //
 void ene(int x, int y) { shape(x, y); }
 
-void bullet(int x, int y) { draw(x, y - 1, 0xFFFFFFF); }
+void bullet(int player_x, int ene_x, int ene_down_y_position,
+            int player_top_y_position) {
+
+  speed bullet;
+  bullet.vx = 12;
+  bullet.x = player_x;
+  bullet.y = player_top_y_position;
+
+  while (true) {
+    bullet.y -= 1;
+    draw(bullet.x, bullet.y, 0xFFFFFFFF);
+  }
+}
