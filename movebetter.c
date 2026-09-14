@@ -30,7 +30,8 @@ typedef struct { // forgot how structs work damn.
 } speed;
 //
 //
-void bullet(speed *player, speed *ene);
+void bullet(speed *player, speed *ene, SDL_Renderer *rend,
+            SDL_Texture *texture);
 /*
  *
  */
@@ -94,12 +95,6 @@ int main(int argc, char *argv[]) {
         // stop this shit;
         value = 0;
       }
-      //
-      //
-      //
-      //
-      //
-      //
       if (event.type == SDL_EVENT_KEY_DOWN) {
         if (event.key.key == SDLK_ESCAPE) {
           // check if there is a popup or not
@@ -114,11 +109,8 @@ int main(int argc, char *argv[]) {
         }
       }
     }
-    SDL_Delay(10);
-    //
-    //
-    //
-    //
+
+    // SDL_Delay(10);
     clear(0x2A2A2A);
     // so would this be my canvas i guess?
     //
@@ -126,7 +118,8 @@ int main(int argc, char *argv[]) {
     player.x = LE / 2.0;
     ene.x = 0;
     ene.y = 0;
-    bullet(&player, &ene);
+    draw(player.x, player.y, 0xFFFFFFFF);
+    bullet(&player, &ene, rend, texture);
     //
     //
 
@@ -177,39 +170,55 @@ void ene(int x, int y) { shape(x, y); }
 // is there no other method that importing the dammend texture and rend
 // togethter? wtf?
 //  i will pass the pointer to the struct having these wthings now.
-void bullet(speed *player, speed *ene) {
+void bullet(speed *player, speed *ene,
+
+            SDL_Renderer *rend, SDL_Texture *texture) {
   SDL_Event movement;
   speed bullet;
   bullet.vx = 12;
-  bullet.x = player->y; // syntactic sugar for (*player).x
-  bullet.y = player->x;
-
-  while (true) {
+  bullet.x = player->x; // syntactic sugar for (*player).x
+  bullet.y = player->y;
+  int bullet_loop = 1;
+  while (bullet_loop) {
 
     while (
         SDL_PollEvent(&movement)) { // can make this thing an switch as well --
                                     // so switch loop inside of a switch loop;
+      if (movement.type == SDL_EVENT_QUIT) {
+        exit(0); // Force exit if user closes window during animation
+      }
+
       if (movement.type == SDL_EVENT_KEY_DOWN) {
         switch (movement.key.key) {
         // down this way we can get both cases and also the {} makes sure that
         // indentation is always there.
+        // or you could use || :(
         case SDLK_RETURN:
         case SDLK_KP_ENTER: {
-
-          if (bullet.y <= 0) {
-            break;
-          }
           bullet.y -= 1;
           draw(bullet.x, bullet.y,
                0xFFFFFFFF); // but how do i create the damned animation?
-          // right now the problem is animation
+          // right now the problem is animation -- //do that outside this loop
+          // bruh :)
           break;
         }
-          //
-          //
-          //
         }
       }
     }
   }
+  //
+  if (bullet.y <= 0) {
+    bullet_loop = false;
+  }
+  // there are two ways here -- through which i can fuck up -- either
+  // redesign the entire thing from scratch in the main terminal so that
+  // it won't get stuck in the loop
+  clear(0x2A2A2A);
+  draw(bullet.x, bullet.y, 0xFFFFFFFF);
+  // Push pixel array to GPU and display it
+  SDL_UpdateTexture(texture, NULL, frame, LE * sizeof(int));
+  SDL_RenderClear(rend);
+  SDL_RenderTexture(rend, texture, NULL, NULL);
+  SDL_RenderPresent(rend);
+  SDL_Delay(16);
 }
