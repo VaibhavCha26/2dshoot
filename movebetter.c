@@ -23,8 +23,7 @@ void shape(int x, int y);
 //
 void player(int x, int y);
 void ene(int x, int y);
-void bullet(int player_x, int ene_x, int ene_down_y_position,
-            int player_top_y_position);
+void bullet(speed *player, speed *ene);
 //
 typedef struct { // forgot how structs work damn.
   float x, y;
@@ -172,16 +171,23 @@ void player(int x, int y) { shape(x, y); }
 //
 void ene(int x, int y) { shape(x, y); }
 
-void bullet(int player_x, int ene_x, int ene_down_y_position,
-            int player_top_y_position) {
+// is there no other method that importing the dammend texture and rend
+// togethter? wtf?
+//  i will pass the pointer to the struct having these wthings now.
+void bullet(speed *player, speed *ene) {
 
   speed bullet;
   bullet.vx = 12;
-  bullet.x = player_x;
-  bullet.y = player_top_y_position;
+  bullet.x = player->y; // syntactic sugar for (*player).x
+  bullet.y = player->x;
 
   while (true) {
+    if (bullet.y <= 0) {
+      break;
+    }
     bullet.y -= 1;
-    draw(bullet.x, bullet.y, 0xFFFFFFFF);
+    draw(bullet.x, bullet.y,
+         0xFFFFFFFF); // but how do i create the damned animation?
+    // right now the problem is animation
   }
 }
