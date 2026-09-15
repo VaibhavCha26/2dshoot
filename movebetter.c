@@ -1,6 +1,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_init.h>
+#include <SDL3/SDL_keyboard.h>
 #include <SDL3/SDL_keycode.h>
 #include <SDL3/SDL_oldnames.h>
 #include <SDL3/SDL_pixels.h>
@@ -53,7 +54,7 @@ int main(int argc, char *argv[]) {
   //
   SDL_Init(SDL_INIT_VIDEO);
   SDL_Event event;
-
+  SDL_Event movement;
   SDL_Window *map = SDL_CreateWindow("Game", LE, HE, 0);
   SDL_Window *popup = NULL;
 
@@ -73,7 +74,10 @@ int main(int argc, char *argv[]) {
   SDL_SetRenderLogicalPresentation(rend, 250, 250,
                                    SDL_LOGICAL_PRESENTATION_LETTERBOX);
   //
-  //
+  player.x = HE / 2.0;
+  player.y = LE / 2.0;
+  // its for testing -- remove to a better place
+
   //
   //
   //
@@ -86,7 +90,6 @@ int main(int argc, char *argv[]) {
   // SDL_SetRenderLogicalPresentation(rend, 320, 180,
   //                              SDL_LOGICAL_PRESENTATION_LETTERBOX);
   while (value) {
-    //
     //
     // this event is for running main window
     while (SDL_PollEvent(&event)) {
@@ -108,21 +111,42 @@ int main(int argc, char *argv[]) {
           }
         }
       }
+      // i am going to use this event for movement as well -- lets see what
+      // happens;
     }
 
+    const bool *ihatemylife = SDL_GetKeyboardState(NULL);
+    if (ihatemylife[SDL_SCANCODE_A]) {
+      if (player.x <= 0 || player.x >= HE) {
+        break;
+      }
+      player.x -= 1.0f;
+    }
+    if (ihatemylife[SDL_SCANCODE_D]) {
+      if (player.x <= 0 || player.x >= HE) {
+        break;
+      }
+      player.x += 1.0f;
+    }
+    // this following this is simply fun and nothing else;
+    if (ihatemylife[SDL_SCANCODE_W]) {
+      if (player.y <= 0 || player.y >= HE) {
+        break;
+      }
+      player.y -= 1.0f;
+    }
+    if (ihatemylife[SDL_SCANCODE_S]) {
+      if (player.y <= 0 || player.y >= HE) {
+        break;
+      }
+      player.y += 1.0f;
+    }
     // SDL_Delay(10);
     clear(0x2A2A2A);
     // so would this be my canvas i guess?
     //
-    player.y = HE / 2.0;
-    player.x = LE / 2.0;
-    ene.x = 0;
-    ene.y = 0;
     draw(player.x, player.y, 0xFFFFFFFF);
-    bullet(&player, &ene, rend, texture);
     //
-    //
-
     SDL_UpdateTexture(texture, NULL, frame, LE * sizeof(int));
     // here we will display things ig?
     SDL_RenderClear(rend);
