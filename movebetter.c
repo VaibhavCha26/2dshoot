@@ -31,8 +31,7 @@ typedef struct { // forgot how structs work damn.
 } speed;
 //
 //
-void bullet(speed *player, speed *ene, SDL_Renderer *rend,
-            SDL_Texture *texture);
+void bullet_draw(speed *player, speed *ene, speed *bullet);
 /*
  *
  */
@@ -51,6 +50,7 @@ void bullet(speed *player, speed *ene, SDL_Renderer *rend,
 int main(int argc, char *argv[]) {
   speed player;
   speed ene;
+  speed bullet;
   //
   SDL_Init(SDL_INIT_VIDEO);
   SDL_Event event;
@@ -61,21 +61,21 @@ int main(int argc, char *argv[]) {
   SDL_Renderer *rend = SDL_CreateRenderer(map, NULL);
 
   SDL_Texture *texture = SDL_CreateTexture(
-      rend, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STREAMING, LE,
-      HE); // i can use different texture access and different pixelformat but
-           // idk this is fine?
+      rend, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STREAMING, 250,
+      250); // i can use different texture access and different pixelformat but
+            // idk this is fine?\
+            //
+  //
+  // Make every pixel box draw 4 times larger
+
   // like do i need it ?
   SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_NEAREST);
   //
   //
   //
-  // here the manipulation of pixel will be done -- i can't increase the size
-  // wtf?
-  SDL_SetRenderLogicalPresentation(rend, 250, 250,
-                                   SDL_LOGICAL_PRESENTATION_LETTERBOX);
-  //
-  player.x = HE / 2.0;
-  player.y = LE / 2.0;
+
+  player.x = 250 / 2.0;
+  player.y = 250 / 2.0;
   // its for testing -- remove to a better place
 
   //
@@ -116,32 +116,34 @@ int main(int argc, char *argv[]) {
     }
 
     const bool *ihatemylife = SDL_GetKeyboardState(NULL);
+    //
+    //
+    //
+    //
     if (ihatemylife[SDL_SCANCODE_A]) {
-      if (player.x <= 0 || player.x >= HE) {
-        break;
+      if (player.x > 0) {
+        player.x -= 0.2f;
       }
-      player.x -= 1.0f;
     }
     if (ihatemylife[SDL_SCANCODE_D]) {
-      if (player.x <= 0 || player.x >= HE) {
-        break;
+      if (player.x < HE - 1) {
+        player.x += 0.2f;
       }
-      player.x += 1.0f;
     }
     // this following this is simply fun and nothing else;
     if (ihatemylife[SDL_SCANCODE_W]) {
-      if (player.y <= 0 || player.y >= HE) {
-        break;
+      if (player.y > 0) {
+        player.y -= 0.2f;
       }
-      player.y -= 1.0f;
     }
     if (ihatemylife[SDL_SCANCODE_S]) {
-      if (player.y <= 0 || player.y >= HE) {
-        break;
+      if (player.y < HE - 1) {
+        player.y += 0.2f;
       }
-      player.y += 1.0f;
     }
-    // SDL_Delay(10);
+    //
+    //
+    // my mind is fucked
     clear(0x2A2A2A);
     // so would this be my canvas i guess?
     //
@@ -194,55 +196,3 @@ void ene(int x, int y) { shape(x, y); }
 // is there no other method that importing the dammend texture and rend
 // togethter? wtf?
 //  i will pass the pointer to the struct having these wthings now.
-void bullet(speed *player, speed *ene,
-
-            SDL_Renderer *rend, SDL_Texture *texture) {
-  SDL_Event movement;
-  speed bullet;
-  bullet.vx = 12;
-  bullet.x = player->x; // syntactic sugar for (*player).x
-  bullet.y = player->y;
-  int bullet_loop = 1;
-  while (bullet_loop) {
-
-    while (
-        SDL_PollEvent(&movement)) { // can make this thing an switch as well --
-                                    // so switch loop inside of a switch loop;
-      if (movement.type == SDL_EVENT_QUIT) {
-        exit(0); // Force exit if user closes window during animation
-      }
-
-      if (movement.type == SDL_EVENT_KEY_DOWN) {
-        switch (movement.key.key) {
-        // down this way we can get both cases and also the {} makes sure that
-        // indentation is always there.
-        // or you could use || :(
-        case SDLK_RETURN:
-        case SDLK_KP_ENTER: {
-          bullet.y -= 1;
-          draw(bullet.x, bullet.y,
-               0xFFFFFFFF); // but how do i create the damned animation?
-          // right now the problem is animation -- //do that outside this loop
-          // bruh :)
-          break;
-        }
-        }
-      }
-    }
-  }
-  //
-  if (bullet.y <= 0) {
-    bullet_loop = false;
-  }
-  // there are two ways here -- through which i can fuck up -- either
-  // redesign the entire thing from scratch in the main terminal so that
-  // it won't get stuck in the loop
-  clear(0x2A2A2A);
-  draw(bullet.x, bullet.y, 0xFFFFFFFF);
-  // Push pixel array to GPU and display it
-  SDL_UpdateTexture(texture, NULL, frame, LE * sizeof(int));
-  SDL_RenderClear(rend);
-  SDL_RenderTexture(rend, texture, NULL, NULL);
-  SDL_RenderPresent(rend);
-  SDL_Delay(16);
-}
