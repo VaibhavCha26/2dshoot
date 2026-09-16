@@ -22,7 +22,7 @@ void draw(int x, int y, int color);
 void shape(int x, int y);
 
 //
-void player(int x, int y);
+void player_draw(int x, int y);
 void ene(int x, int y);
 //
 typedef struct { // forgot how structs work damn.
@@ -142,24 +142,26 @@ int main(int argc, char *argv[]) {
         player.y += 0.2f;
       }
     }
-    bool bulletRun = ihatemylife[SDL_SCANCODE_SPACE];
-    if (bulletRun) {
+    bool bulletIn = ihatemylife[SDL_SCANCODE_SPACE];
+
+    if (bulletIn) {
       if (bullet.y > 0) {
-        bullet.y -= 1;
-        bulletRun = 1;
+        bullet.y -= 0.6f;
+        bulletIn = 1;
+      } else {
+        bulletIn = 0;
       }
     } else {
       bullet.x = player.x;
       bullet.y = player.y;
     }
-    //
-    //
+
     //
     // my mind is fucked
     clear(0x2A2A2A);
     // so would this be my canvas i guess?
     //
-    draw(player.x, player.y, 0xFFFFFFFF);
+    player_draw(player.x, player.y);
     if (bullet.y != 0) {
       draw(bullet.x, bullet.y, 0xFFFFFFFF);
     }
@@ -197,15 +199,17 @@ void draw(int x, int y, int color) { frame[LE * y + x] = color; }
 
 void shape(int x, int y) {
   draw(x - 1, y - 1, 0xFFFFFFFF);
+  draw(x - 1, y + 1, 0xFFFFFFFF);
+  draw(x - 1, y, 0xFFFFFFFF);
+  draw(x + 1, y, 0xFFFFFFFF);
+  draw(x + 1, y - 1, 0xFFFFFFFF);
   draw(x + 1, y + 1, 0xFFFFFFFF);
-  draw(x, y - 1, 0xFFFFFFFF);
   draw(x, y + 1, 0xFFFFFFFF);
-  draw(x - 1, y - 1, 0xFFFFFFFF);
-  draw(x + 1, y + 1, 0xFFFFFFFF);
+  draw(x, y - 1, 0xFFFFFFFF);
   draw(x, y, 0xFFFFFFFF);
 }
 
-void player(int x, int y) { shape(x, y); }
+void player_draw(int x, int y) { shape(x, y); }
 //
 //
 void ene(int x, int y) { shape(x, y); }
