@@ -12,18 +12,19 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#define LE 1000
-#define HE 1000
+#include <time.h>
+#define LE 250
+#define HE 250
+#define MAX_ENE 7
 
 int frame[LE * HE];
 void clear(int color);
 void draw(int x, int y, int color);
 void shape(int x, int y);
-
+int randomposition(void);
 //
 void player_draw(int x, int y);
-void ene(int x, int y);
+void ene_draw(int x, int y);
 //
 typedef struct { // forgot how structs work damn.
   float x, y;
@@ -32,6 +33,7 @@ typedef struct { // forgot how structs work damn.
 //
 //
 void bullet_draw(speed *player, speed *ene, speed *bullet);
+
 /*
  *
  */
@@ -49,13 +51,13 @@ void bullet_draw(speed *player, speed *ene, speed *bullet);
 
 int main(int argc, char *argv[]) {
   speed player;
-  speed ene;
+  speed ene[MAX_ENE];
   speed bullet;
   //
   SDL_Init(SDL_INIT_VIDEO);
   SDL_Event event;
   SDL_Event movement;
-  SDL_Window *map = SDL_CreateWindow("Game", LE, HE, 0);
+  SDL_Window *map = SDL_CreateWindow("Game", 1000, 1000, 0);
   SDL_Window *popup = NULL;
 
   SDL_Renderer *rend = SDL_CreateRenderer(map, NULL);
@@ -79,8 +81,6 @@ int main(int argc, char *argv[]) {
   // its for testing -- remove to a better place
   bullet.y = player.y;
   bullet.x = player.x;
-  //
-  //
   //
   //
   //
@@ -118,36 +118,50 @@ int main(int argc, char *argv[]) {
 
     const bool *ihatemylife = SDL_GetKeyboardState(NULL);
     //
-    //
+
     //
     //
     if (ihatemylife[SDL_SCANCODE_A]) {
       if (player.x > 0) {
-        player.x -= 0.2f;
+        player.x -= 0.1f;
       }
     }
     if (ihatemylife[SDL_SCANCODE_D]) {
       if (player.x < HE - 1) {
-        player.x += 0.2f;
+        player.x += 0.1f;
       }
     }
     // this following this is simply fun and nothing else;
     if (ihatemylife[SDL_SCANCODE_W]) {
       if (player.y > 0) {
-        player.y -= 0.2f;
+        player.y -= 0.1f;
       }
     }
     if (ihatemylife[SDL_SCANCODE_S]) {
       if (player.y < HE - 1) {
-        player.y += 0.2f;
+        player.y += 0.1f;
       }
     }
-    bool bulletIn = ihatemylife[SDL_SCANCODE_SPACE];
+    //
+    //
+    for (int i = 0; i < 7; i++) {
+      ene[i].x = LE / 2.0f;
+      ene[i].y += 0.01f;
+      if (ene[i].y >= HE) {
+        ene[i].y = 0;
+        ene[i].x = i * 10;
+      }
+    }
+    //
+    //
+    //
+    //
+    //
 
+    bool bulletIn = ihatemylife[SDL_SCANCODE_SPACE];
     if (bulletIn) {
       if (bullet.y > 0) {
-        bullet.y -= 0.6f;
-        bulletIn = 1;
+        bullet.y -= 0.2f;
       } else {
         bulletIn = 0;
       }
@@ -159,8 +173,12 @@ int main(int argc, char *argv[]) {
     //
     // my mind is fucked
     clear(0x2A2A2A);
+
     // so would this be my canvas i guess?
     //
+    for (int i = 0; i < 7; i++) {
+      ene_draw(ene[i].x, ene[i].y); // can also do (int)ene.
+    }
     player_draw(player.x, player.y);
     if (bullet.y != 0) {
       draw(bullet.x, bullet.y, 0xFFFFFFFF);
@@ -195,7 +213,11 @@ void clear(int color) {
   }
 }
 
-void draw(int x, int y, int color) { frame[LE * y + x] = color; }
+void draw(int x, int y, int color) {
+  if (x >= 0 && x < HE && y >= 0 && y < HE) {
+    frame[LE * y + x] = color;
+  }
+}
 
 void shape(int x, int y) {
   draw(x - 1, y - 1, 0xFFFFFFFF);
@@ -212,8 +234,11 @@ void shape(int x, int y) {
 void player_draw(int x, int y) { shape(x, y); }
 //
 //
-void ene(int x, int y) { shape(x, y); }
-
+void ene_draw(int x, int y) { shape(x, y); }
+int randomposition(void) {
+  srand(time(NULL));
+  return (rand() % (250 + 1));
+}
 // is there no other method that importing the dammend texture and rend
 // togethter? wtf?
 //  i will pass the pointer to the struct having these wthings now.
