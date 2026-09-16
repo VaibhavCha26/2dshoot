@@ -77,7 +77,8 @@ int main(int argc, char *argv[]) {
   player.x = 250 / 2.0;
   player.y = 250 / 2.0;
   // its for testing -- remove to a better place
-
+  bullet.y = player.y;
+  bullet.x = player.x;
   //
   //
   //
@@ -141,6 +142,17 @@ int main(int argc, char *argv[]) {
         player.y += 0.2f;
       }
     }
+    bool bulletRun = ihatemylife[SDL_SCANCODE_SPACE];
+    if (bulletRun) {
+      if (bullet.y > 0) {
+        bullet.y -= 1;
+        bulletRun = 1;
+      }
+    } else {
+      bullet.x = player.x;
+      bullet.y = player.y;
+    }
+    //
     //
     //
     // my mind is fucked
@@ -148,6 +160,11 @@ int main(int argc, char *argv[]) {
     // so would this be my canvas i guess?
     //
     draw(player.x, player.y, 0xFFFFFFFF);
+    if (bullet.y != 0) {
+      draw(bullet.x, bullet.y, 0xFFFFFFFF);
+    }
+    //
+    //
     //
     SDL_UpdateTexture(texture, NULL, frame, LE * sizeof(int));
     // here we will display things ig?
