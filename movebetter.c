@@ -123,35 +123,27 @@ int main(int argc, char *argv[]) {
     //
     if (ihatemylife[SDL_SCANCODE_A]) {
       if (player.x > 0) {
-        player.x -= 0.1f;
+        player.x -= 0.01f;
       }
     }
     if (ihatemylife[SDL_SCANCODE_D]) {
       if (player.x < HE - 1) {
-        player.x += 0.1f;
+        player.x += 0.01f;
       }
     }
     // this following this is simply fun and nothing else;
     if (ihatemylife[SDL_SCANCODE_W]) {
       if (player.y > 0) {
-        player.y -= 0.1f;
+        player.y -= 0.01f;
       }
     }
     if (ihatemylife[SDL_SCANCODE_S]) {
       if (player.y < HE - 1) {
-        player.y += 0.1f;
+        player.y += 0.01f;
       }
     }
     //
     //
-    for (int i = 0; i < 7; i++) {
-      ene[i].x = LE / 2.0f;
-      ene[i].y += 0.01f;
-      if (ene[i].y >= HE) {
-        ene[i].y = 0;
-        ene[i].x = i * 10;
-      }
-    }
     //
     //
     //
@@ -176,7 +168,15 @@ int main(int argc, char *argv[]) {
 
     // so would this be my canvas i guess?
     //
+
     for (int i = 0; i < 7; i++) {
+      for (int i = 0; i < 7; i++) {
+        ene[i].y += 0.01f;
+        if (ene[i].y >= HE) {
+          ene[i].y = 0.1 * randomposition();
+          ene[i].x = i * randomposition();
+        }
+      }
       ene_draw(ene[i].x, ene[i].y); // can also do (int)ene.
     }
     player_draw(player.x, player.y);
@@ -237,7 +237,7 @@ void player_draw(int x, int y) { shape(x, y); }
 void ene_draw(int x, int y) { shape(x, y); }
 int randomposition(void) {
   srand(time(NULL));
-  return (rand() % (250 + 1));
+  return (rand() % (25));
 }
 // is there no other method that importing the dammend texture and rend
 // togethter? wtf?
