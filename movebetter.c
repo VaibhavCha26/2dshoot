@@ -118,7 +118,6 @@ int main(int argc, char *argv[]) {
 
     const bool *ihatemylife = SDL_GetKeyboardState(NULL);
     //
-
     //
     //
     if (ihatemylife[SDL_SCANCODE_A]) {
@@ -149,8 +148,8 @@ int main(int argc, char *argv[]) {
     //
     //
     //
-
     bool bulletIn = ihatemylife[SDL_SCANCODE_SPACE];
+    //
     if (bulletIn) {
       if (bullet.y > 0) {
         bullet.y -= 0.2f;
@@ -176,7 +175,8 @@ int main(int argc, char *argv[]) {
           ene[i].y = 0.1f;
           ene[i].x = randomposition();
         }
-      }
+        ene_draw(ene[i].x, ene[i].y);
+      } // only single one is being drawn -- how to make multiple ones.?
       ene_draw(ene[i].x, ene[i].y); // can also do (int)ene.
     }
     player_draw(player.x, player.y);
