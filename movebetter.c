@@ -167,17 +167,22 @@ int main(int argc, char *argv[]) {
 
     // so would this be my canvas i guess?
     //
-
+    int bulletTouched_once = 0;
     for (int i = 0; i < 7; i++) {
       for (int i = 0; i < 7; i++) {
         ene[i].y += 0.004f;
         if (ene[i].y >= HE) {
-          ene[i].y = 0.1f;
+          ene[i].y = 0.0f;
           ene[i].x = randomposition();
         }
-        ene_draw(ene[i].x, ene[i].y);
       } // only single one is being drawn -- how to make multiple ones.?
-      ene_draw(ene[i].x, ene[i].y); // can also do (int)ene.
+      if (bullet.x == ene[i].x && bullet.y == ene[i].y) {
+        bulletTouched_once = 1;
+      }
+      if (!bulletTouched_once) {
+        ene_draw(ene[i].x, ene[i].y);
+      } // can also do (int)ene.
+      //
     }
     player_draw(player.x, player.y);
     if (bullet.y != 0) {
@@ -237,7 +242,7 @@ void player_draw(int x, int y) { shape(x, y); }
 void ene_draw(int x, int y) { shape(x, y); }
 int randomposition(void) {
   srand(time(NULL));
-  return (rand() % (251)); // or rand() // rand_max * 250.0f;
+  return (rand() % (251) + 1); // or rand() // rand_max * 250.0f;
 }
 // is there no other method that importing the dammend texture and rend
 // togethter? wtf?
