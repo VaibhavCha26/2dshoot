@@ -1,0 +1,6 @@
+# Ignore the compiled executable binary
+movebetter
+
+# Ignore any standard C object files
+*.o
+
